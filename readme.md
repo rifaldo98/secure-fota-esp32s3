@@ -55,6 +55,24 @@ Designed for ESP32-S3 (USB-JTAG GPIO override included)
     │  WiFi Config (NVS) │
     └────────────────────┘
 
+OTA Validation Flow (Fail-Safe Logic)
+Flow:
+OTA Download
+Reboot
+Firmware enters PENDING_VERIFY state
+System waits 10 seconds for stability
+Decision:
+If crash/reboot occurs → Automatic Rollback
+If system is stable → Mark App Valid
+
+Normal Boot Flow
+Boot device
+Check OTA state
+If state is PENDING_VERIFY:
+Wait 10 seconds
+Call esp_ota_mark_app_valid_cancel_rollback()
+Continue normal application execution
+
 # LED Status Indicator
 Mode		Pattern				Color
 Normal		Slow blink (500ms)		Blue
@@ -79,3 +97,4 @@ Portal Features
 Change WiFi credentials
 
 Trigger OTA update via firmware URL
+
